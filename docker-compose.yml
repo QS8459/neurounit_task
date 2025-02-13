@@ -1,0 +1,52 @@
+  services:
+    neurounit_back_end:
+      container_name: neurounit
+      build:
+        context: .
+        dockerfile: Dockerfile
+#      entrypoint: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "7100", "--workers", "4", "--reload"]
+      entrypoint: ["supervisord","-c","/etc/supervisord.conf"]
+      ports:
+        - "7100:7100"
+      expose:
+        - 7100
+      volumes:
+        - ./src:/app/src
+        - ./src/main.py:/app/src/main.py
+        - ./alembic:/app/alembic
+#        - ./cronjob.sh:/app/cronjob.sh
+#        - ./cronfile:/etc/crontabs/root
+      depends_on:
+        - neurounit_db
+        - rabbitmq
+      restart: always
+
+    neurounit_db:
+      container_name: neuro_db
+      image: neurounits_t-neurounit_db
+      build:
+        context: ./postgres_alpine
+        dockerfile: Dockerfile
+      environment:
+        POSTGRES_USER: neuro
+        POSTGRES_PASSWD: unit
+        POSTGRES_DB: neurounit
+        POSTGRES_HOST: 5432
+      restart: always
+      volumes:
+        - postgresvolume:/var/lib/postgresql/data
+
+    rabbitmq:
+      container_name: neuron_rbt
+      image: rabbitmq:3-management
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+      environment:
+        RABBITMQ_DEFAULT_USER: neuron_rbt_user
+        RABBITMQ_DEFAULT_PASS: neuron
+      restart: always
+
+  volumes:
+    postgresvolume:
+      driver: local
