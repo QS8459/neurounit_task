@@ -32,7 +32,7 @@ if __name__ == "__main__":
             generate_products(**data)
 
         tree = gfg.ElementTree(root)
-        with open('/app/gen_xml.xml', 'wb') as f:
+        with open('gen_xml.xml', 'wb') as f:
             tree.write(f)
     except Exception as e:
         raise ValueError('We have a problem in xml generator')

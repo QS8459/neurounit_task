@@ -22,7 +22,7 @@
       restart: always
 
     neurounit_db:
-      container_name: neuro_db
+      container_name: neuro_db_01
       image: neurounits_t-neurounit_db
       build:
         context: ./postgres_alpine
@@ -32,6 +32,8 @@
         POSTGRES_PASSWD: unit
         POSTGRES_DB: neurounit
         POSTGRES_HOST: 5432
+      ports:
+        - "5430:5432"
       restart: always
       volumes:
         - postgresvolume:/var/lib/postgresql/data

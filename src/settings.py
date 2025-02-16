@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     PG_URI: PostgresDsn
 
     class Config:
-        env_file = None
+        env_file = ".env"
         env_file_encoding = "utf-8"
         extra = Extra.allow
         env_prefix = "NE_"
